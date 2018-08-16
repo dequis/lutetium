@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+    rabbitmq:
+        image: rabbitmq
+        hostname: lutetium_rabbitmq
+        ports:
+            - "5672:5672"
