@@ -4,7 +4,7 @@ import aioamqp
 import logging
 
 class LutetiumCommon:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.transport = None
         self.protocol = None
         self.channel = None
