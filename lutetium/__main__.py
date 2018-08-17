@@ -6,7 +6,7 @@ import functools
 
 from .meter import Meter
 from .pvsim import PVSim
-from .meter_source import RandomMeterSource
+from .sources import RandomMeterSource
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
