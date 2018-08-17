@@ -2,9 +2,11 @@ import click
 import asyncio
 import aioamqp
 import logging
+import functools
 
 from .meter import Meter
 from .pvsim import PVSim
+from .meter_source import RandomMeterSource
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
@@ -16,24 +18,35 @@ def run_forever(*coros):
     return loop
 
 @click.group()
-def cli():
+@click.pass_context
+def cli(ctx):
     setup_logging()
+    ctx.obj['meter_source'] = RandomMeterSource()
 
-@cli.command()
-def meter():
-    run_forever(Meter().run())
+def command(f):
 
-@cli.command()
-def pvsim():
-    run_forever(PVSim().run())
+    @cli.command(name=f.__name__)
+    @click.pass_context
+    @functools.wraps(f)
+    def wrapper(ctx):
+        run_forever(*f(ctx))
 
-@cli.command()
-def all():
-    run_forever(
-        Meter().run(),
-        PVSim().run(),
-    )
+    wrapper.orig = f
+
+    return wrapper
+
+@command
+def meter(ctx):
+    return [Meter(**ctx.obj).run()]
+
+@command
+def pvsim(ctx):
+    return [PVSim(**ctx.obj).run()]
+
+@command
+def all(ctx):
+    return meter.orig(ctx) + pvsim.orig(ctx)
 
 if __name__ == '__main__':
-    cli()
+    cli(obj={})
 
