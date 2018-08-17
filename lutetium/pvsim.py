@@ -3,7 +3,7 @@ import logging
 
 from . import common
 
-logger = logging.getLogger('lutetium.meter')
+logger = logging.getLogger('lutetium.pvsim')
 
 class PVSim(common.LutetiumCommon):
 
