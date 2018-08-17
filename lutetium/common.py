@@ -1,3 +1,4 @@
+import json
 import asyncio
 import aioamqp
 import logging
@@ -15,6 +16,9 @@ class LutetiumCommon:
         await self.channel.queue_declare(queue_name=self.queue_name)
 
     async def publish(self, message):
+        if not isinstance(message, bytes):
+            message = json.dumps(message).encode()
+
         return await self.channel.publish(message, '', self.queue_name)
 
     async def consume(self, callback, queue=None):
