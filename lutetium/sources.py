@@ -13,7 +13,7 @@ class RandomMeterSource:
         self.target = self.value
         self.speed = 0
 
-    def step(self):
+    def step(self, x):
         if (self.target - self.value) < 1:
             # target reached or unset, find a new random target
             self.target = random.randint(self.min, self.max)

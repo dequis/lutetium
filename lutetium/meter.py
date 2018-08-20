@@ -20,7 +20,7 @@ class Meter(common.LutetiumCommon):
             self.seq += 1
             message = protocol.MeterMessage.make(
                 seq=self.seq,
-                value=self.source.step(),
+                value=self.source.step(self.seq),
             )
 
             logger.debug(message.decode())
