@@ -17,11 +17,6 @@ TASKS = {
 
 TASKS['all'] = [x[0] for x in TASKS.values()]
 
-def setup_logging(verbose):
-    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
-
-    logging.basicConfig(level=levels[min(2, verbose)])
-
 @click.command()
 @click.option('-v', '--verbose', count=True)
 @click.argument('tasks',
@@ -30,7 +25,9 @@ def setup_logging(verbose):
     type=click.Choice(TASKS.keys())
 )
 def main(verbose, tasks):
-    setup_logging(verbose)
+    levels = [logging.WARNING, logging.INFO, logging.DEBUG]
+
+    logging.basicConfig(level=levels[min(2, verbose)])
 
     obj = {}
     obj['meter_source'] = sources.RandomMeterSource()
