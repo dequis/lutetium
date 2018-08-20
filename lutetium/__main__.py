@@ -6,7 +6,7 @@ import functools
 
 from .meter import Meter
 from .pvsim import PVSim
-from .sources import RandomMeterSource
+from . import sources
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
@@ -21,7 +21,8 @@ def run_forever(*coros):
 @click.pass_context
 def cli(ctx):
     setup_logging()
-    ctx.obj['meter_source'] = RandomMeterSource()
+    ctx.obj['meter_source'] = sources.RandomMeterSource()
+    ctx.obj['pvsim_source'] = sources.NoisyAbsurdPolynomialFitSource()
 
 def command(f):
 
