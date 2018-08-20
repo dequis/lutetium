@@ -19,12 +19,13 @@ TASKS['all'] = [x[0] for x in TASKS.values()]
 
 @click.command()
 @click.option('-v', '--verbose', count=True)
+@click.option('-f', '--filename', default='out.jsonl')
 @click.argument('tasks',
     nargs=-1,
     required=True,
     type=click.Choice(TASKS.keys())
 )
-def main(verbose, tasks):
+def main(verbose, filename, tasks):
     levels = [logging.WARNING, logging.INFO, logging.DEBUG]
 
     logging.basicConfig(level=levels[min(2, verbose)])
@@ -32,7 +33,7 @@ def main(verbose, tasks):
     obj = {}
     obj['meter_source'] = sources.RandomMeterSource()
     obj['pvsim_source'] = sources.NoisyAbsurdPolynomialFitSource()
-    obj['filename'] = 'out.jsonl'
+    obj['filename'] = filename
 
     coros = []
 
