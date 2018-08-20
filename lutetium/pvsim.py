@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from . import common
+from . import common, protocol
 
 logger = logging.getLogger('lutetium.pvsim')
 
@@ -10,9 +10,24 @@ class PVSim(common.LutetiumCommon):
     def __init__(self, pvsim_source=None, **kwargs):
         super().__init__(**kwargs)
         self.source = pvsim_source
+        self.seq = 0
 
     async def on_event(self, channel, body, envelope, properties):
-        logger.info(body)
+        meter_message = protocol.MeterMessage().loads(body)
+
+        self.seq += 1
+
+        msg = {}
+        msg['timestamp'] = meter_message['timestamp']
+        msg['meter_value'] = meter_message['value']
+        msg['pv_value'] = self.source.step(self.seq)
+        msg['combined'] = msg['meter_value'] + msg['pv_value']
+        msg['seq'] = self.seq
+
+        pv_message = protocol.PVMessage.make(**msg)
+
+        logger.debug(pv_message.decode())
+
         await channel.basic_client_ack(envelope.delivery_tag)
 
     async def run(self):
