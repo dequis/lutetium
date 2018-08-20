@@ -23,9 +23,7 @@ class RandomMeterSource:
 
         self.value = new_value
 
-        return {
-            'value': new_value,
-        }
+        return new_value
 
 
 class AbsurdPolynomialFitSource:
