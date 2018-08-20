@@ -37,5 +37,4 @@ class PVSim(common.LutetiumCommon):
     async def run(self):
         await self.connect()
 
-        while True:
-            await self.consume(self.on_event)
+        await self.consume(self.on_event)
