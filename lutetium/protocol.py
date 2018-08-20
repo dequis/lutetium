@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from marshmallow import Schema, fields, validates, ValidationError
 
 logger = logging.getLogger('lutetium.protocol')
@@ -49,6 +50,21 @@ class BaseMessage(Schema):
         if expected != value:
             logger.warning('%s: Expected sequence ID %s, got %s',
                 self.get_type(), expected, value)
+
+    @classmethod
+    def make(cls, **kwargs):
+        """Helper method to make new messages.
+
+        Recommended but optional args are timestamp and seq, plus anything
+        required by the subclass
+
+        Returns bytes with encoded json.
+        """
+
+        kwargs['type'] = cls.__name__
+        kwargs.setdefault('timestamp', datetime.now())
+        kwargs.setdefault('seq', 0)
+        return cls().dumps(kwargs).encode()
 
 
 class MeterMessage(BaseMessage):
