@@ -30,6 +30,8 @@ class PVSim(common.LutetiumCommon):
 
         logger.debug(pv_message.decode())
 
+        await self.publish(pv_message)
+
         await channel.basic_client_ack(envelope.delivery_tag)
 
     async def run(self):
