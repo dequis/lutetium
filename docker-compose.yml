@@ -6,3 +6,11 @@ services:
         hostname: lutetium_rabbitmq
         ports:
             - "5672:5672"
+    app:
+        build:
+            context: .
+        volumes:
+            - ./:/workdir
+        environment:
+            - 'LUTETIUM_AMQP_CONFIG={"host": "rabbitmq"}'
+        command: "python -m lutetium -vv all"
