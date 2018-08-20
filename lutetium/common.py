@@ -3,6 +3,8 @@ import asyncio
 import aioamqp
 import logging
 
+logger = logging.getLogger('lutetium.common')
+
 class LutetiumCommon:
     publish_queue = None
     consume_queue = None
@@ -14,9 +16,24 @@ class LutetiumCommon:
         self.amqp_config = kwargs.get('amqp_config', {})
 
     async def connect(self):
-        self.transport, self.protocol = await aioamqp.connect(
-            **self.amqp_config
-        )
+        tries = 0
+        while True:
+            try:
+                self.transport, self.protocol = await aioamqp.connect(
+                    **self.amqp_config
+                )
+            except:
+                if tries > 10:
+                    raise
+                tries += 1
+
+                logging.exception('Connection error, retrying (try #%s)', tries)
+
+                # exponential backoff
+                await asyncio.sleep(2 ** tries)
+            else:
+                break
+
         self.channel = await self.protocol.channel()
 
         for name in [self.publish_queue, self.consume_queue]:
