@@ -1,5 +1,14 @@
 import random
 
+SOURCE_REGISTRY = {}
+
+def register(name):
+    def decorator(cls):
+        SOURCE_REGISTRY[name] = cls
+        return cls
+    return decorator
+
+@register('random')
 class RandomMeterSource:
     """A meter source that targets random values and moves 10%-30% of the way
     in each step"""
@@ -26,6 +35,7 @@ class RandomMeterSource:
         return new_value
 
 
+@register('absurd_polynomial')
 class AbsurdPolynomialFitSource:
     """A PV data source that pretends this is a data science problem.
 
@@ -85,6 +95,7 @@ class AbsurdPolynomialFitSource:
 
         return z
 
+@register('noisy_absurd_polynomial')
 class NoisyAbsurdPolynomialFitSource(AbsurdPolynomialFitSource):
     """Adds a bit of random noise over AbsurdPolynomialFitSource"""
 
