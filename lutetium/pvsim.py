@@ -6,6 +6,8 @@ from . import common, protocol
 logger = logging.getLogger('lutetium.pvsim')
 
 class PVSim(common.LutetiumCommon):
+    consume_queue = 'lutetium_meter'
+    publish_queue = 'lutetium_pvsim'
 
     def __init__(self, pvsim_source=None, **kwargs):
         super().__init__(**kwargs)

@@ -4,25 +4,30 @@ import aioamqp
 import logging
 
 class LutetiumCommon:
+    publish_queue = None
+    consume_queue = None
+
     def __init__(self, **kwargs):
         self.transport = None
         self.protocol = None
         self.channel = None
-        self.queue_name = 'lutetium'
 
     async def connect(self):
         self.transport, self.protocol = await aioamqp.connect()
         self.channel = await self.protocol.channel()
-        await self.channel.queue_declare(queue_name=self.queue_name)
+
+        for name in [self.publish_queue, self.consume_queue]:
+            if name:
+                await self.channel.queue_declare(queue_name=name)
 
     async def publish(self, message):
         if not isinstance(message, bytes):
             message = json.dumps(message).encode()
 
-        return await self.channel.publish(message, '', self.queue_name)
+        return await self.channel.publish(message, '', self.publish_queue)
 
     async def consume(self, callback, queue=None):
-        return await self.channel.basic_consume(callback, self.queue_name)
+        return await self.channel.basic_consume(callback, self.consume_queue)
 
     async def run(self):
         pass

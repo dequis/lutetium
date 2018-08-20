@@ -6,6 +6,8 @@ from . import common, protocol
 logger = logging.getLogger('lutetium.meter')
 
 class Meter(common.LutetiumCommon):
+    publish_queue = 'lutetium_meter'
+
     def __init__(self, meter_source, **kwargs):
         super().__init__(**kwargs)
         self.source = meter_source
