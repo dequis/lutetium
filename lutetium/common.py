@@ -11,9 +11,12 @@ class LutetiumCommon:
         self.transport = None
         self.protocol = None
         self.channel = None
+        self.amqp_config = kwargs.get('amqp_config', {})
 
     async def connect(self):
-        self.transport, self.protocol = await aioamqp.connect()
+        self.transport, self.protocol = await aioamqp.connect(
+            **self.amqp_config
+        )
         self.channel = await self.protocol.channel()
 
         for name in [self.publish_queue, self.consume_queue]:

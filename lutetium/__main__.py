@@ -1,3 +1,5 @@
+import os
+import json
 import click
 import asyncio
 import aioamqp
@@ -44,6 +46,9 @@ def main(verbose, filename, meter_source, pvsim_source, tasks):
     obj['meter_source'] = SOURCE_REGISTRY[meter_source]()
     obj['pvsim_source'] = SOURCE_REGISTRY[pvsim_source]()
     obj['filename'] = filename
+
+    if os.getenv('LUTETIUM_AMQP_CONFIG'):
+        obj['amqp_config'] = json.loads(os.getenv('LUTETIUM_AMQP_CONFIG'))
 
     coros = []
 
