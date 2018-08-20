@@ -14,7 +14,7 @@ class BaseMessage(Schema):
      - timestamp: optional time, for events. Rendered as an ISO8601 string.
     """
 
-    type = fields.Method('get_type', required=True)
+    type = fields.Method('get_type', 'set_type', required=True)
     seq = fields.Integer(required=True)
     timestamp = fields.DateTime()
 
@@ -26,12 +26,13 @@ class BaseMessage(Schema):
 
         return type(self).__name__
 
-    @validates('type')
-    def validate_type(self, value):
+    def set_type(self, value):
         """Minimal class-level type checking"""
 
         if value != self.get_type():
             raise ValidationError('Invalid object type')
+
+        return value
 
     @validates('seq')
     def validate_seq(self, value):
