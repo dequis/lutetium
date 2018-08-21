@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import datetime
 
 from . import common, protocol
 
@@ -18,8 +19,17 @@ class Meter(common.LutetiumCommon):
 
         while True:
             self.seq += 1
+
+            timestamp = datetime.datetime.combine(
+                datetime.date.today(),
+                datetime.time.min,
+            ) + datetime.timedelta(
+                minutes=self.seq
+            )
+
             message = protocol.MeterMessage.make(
                 seq=self.seq,
+                timestamp=timestamp,
                 value=self.source.step(self.seq),
             )
 
