@@ -22,12 +22,12 @@ class LutetiumCommon:
                 self.transport, self.protocol = await aioamqp.connect(
                     **self.amqp_config
                 )
-            except:
+            except ConnectionError:
                 if tries > 10:
                     raise
                 tries += 1
 
-                logging.exception('Connection error, retrying (try #%s)', tries)
+                logging.error("Can't connect to AMQP server, retrying (try #%s)", tries)
 
                 # exponential backoff
                 await asyncio.sleep(2 ** tries)
