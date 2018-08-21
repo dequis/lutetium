@@ -17,7 +17,7 @@ class Meter(common.LutetiumCommon):
     async def run(self):
         await self.connect()
 
-        while True:
+        while self.seq < 1440:
             self.seq += 1
 
             timestamp = datetime.datetime.combine(
@@ -36,4 +36,3 @@ class Meter(common.LutetiumCommon):
             logger.debug(message.decode())
 
             await self.publish(message)
-            await asyncio.sleep(1)

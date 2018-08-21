@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from . import common, protocol
@@ -14,6 +15,7 @@ class Writer(common.LutetiumCommon):
 
     async def on_event(self, channel, body, envelope, properties):
         pv_message = protocol.PVMessage().loads(body)
+        self.seq = pv_message['seq']
 
         self.file.write(body.decode() + '\n')
         self.file.flush()
@@ -24,3 +26,6 @@ class Writer(common.LutetiumCommon):
         await self.connect()
 
         await self.consume(self.on_event)
+
+        while self.seq < 1440:
+            await asyncio.sleep(1)

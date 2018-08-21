@@ -59,7 +59,6 @@ def main(verbose, filename, meter_source, pvsim_source, tasks):
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(asyncio.gather(*coros))
-    loop.run_forever()
 
 if __name__ == '__main__':
     main()

@@ -38,3 +38,6 @@ class PVSim(common.LutetiumCommon):
         await self.connect()
 
         await self.consume(self.on_event)
+
+        while self.seq < 1440:
+            await asyncio.sleep(1)
